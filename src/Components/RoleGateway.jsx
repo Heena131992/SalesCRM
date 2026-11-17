@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Lock, Mail, ArrowRight, Sparkles, Eye, EyeOff } from 'lucide-react';
 import './RoleGateway.css';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function RoleGateway({ onLoginSuccess, onSelectUser, users = [] }) {
   const [email, setEmail] = useState('vikram@salespulse.in');
   const [password, setPassword] = useState('Welcome@123');
