@@ -1,0 +1,28 @@
+.admin-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-toolbar {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.staff-sub-territory {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.approval-btn-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
+@media (max-width: 768px) {
+  .admin-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
