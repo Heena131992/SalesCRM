@@ -35,7 +35,7 @@ export default function App() {
   // Load Full Data from MongoDB Backend (with fallback to INITIAL_STATE if backend is offline)
   const fetchAllData = async () => {
     try {
-      const res = await fetch(`${API_BASE}/state`);
+      const res = await fetch(`${API_BASE}/api/state`);
       if (!res.ok) throw new Error('Server error');
       const json = await res.json();
       if (json && Array.isArray(json.users) && json.users.length > 0) {
@@ -98,7 +98,7 @@ export default function App() {
   // 2. Add New Deal
   const handleAddDeal = async (newDeal) => {
     try {
-      const res = await fetch(`${API_BASE}/deals`, {
+      const res = await fetch(`${API_BASE}/api/deals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newDeal),
@@ -182,7 +182,7 @@ export default function App() {
   // 6. Log Daily Activity
   const handleAddActivity = async (newAct) => {
     try {
-      const res = await fetch(`${API_BASE}/activities`, {
+      const res = await fetch(`${API_BASE}/api/activities`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newAct),
@@ -200,7 +200,7 @@ export default function App() {
   // 7. Submit & Approve Expenses
   const handleAddExpense = async (newExp) => {
     try {
-      const res = await fetch(`${API_BASE}/expenses`, {
+      const res = await fetch(`${API_BASE}/api/expenses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newExp),
@@ -260,7 +260,7 @@ export default function App() {
 
   const handleAddStaff = async (staffPayload) => {
     try {
-      const res = await fetch(`${API_BASE}/users`, {
+      const res = await fetch(`${API_BASE}/api/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...staffPayload, role: 'staff' }),
