@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Check, X, UserPlus } from 'lucide-react';
+import { Download, Check, X, UserPlus, FileText } from 'lucide-react';
 import { formatINR, formatCompactINR } from '../data/mockData';
 import { RevenueVsQuotaChart, PipelineFunnelChart, CategoryMixChart } from './Charts';
 import { downloadExecutiveReportPDF } from '../utils/pdfGenerator';
@@ -66,6 +66,30 @@ export default function AdminView({
     a.click();
   };
 
+  // Work ke according Claim Slip CSV/PDF export
+  const handleDownloadClaimSlip = (singleClaim = null) => {
+    const targetList = singleClaim ? [singleClaim] : expenses;
+    const headers = ['Date', 'Staff Name', 'Client', 'Category', 'Amount (INR)', 'Status', 'Notes'];
+    const rows = targetList.map((e) => [
+      e.date,
+      getStaffName(e.staffId),
+      e.client,
+      e.category,
+      e.amount,
+      e.status,
+      `"${(e.notes || '').replace(/"/g, '""')}"`,
+    ]);
+    const csv = [headers, ...rows].map((r) => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = singleClaim
+      ? `claim_slip_${getStaffName(singleClaim.staffId).replace(/\s+/g, '_')}.csv`
+      : 'salespulse_claims_slip.csv';
+    a.click();
+  };
+
   const handleCreateStaff = (e) => {
     e.preventDefault();
     if (!newStaff.name) return;
@@ -77,6 +101,28 @@ export default function AdminView({
       quota: 500000,
     });
     setShowAddStaff(false);
+  };
+
+  // Single-Line Toolbar Button Style
+  const singleRowToolbarStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '6px',
+    width: '100%',
+    marginTop: '8px',
+  };
+
+  const compactBtnStyle = {
+    padding: '8px 6px',
+    fontSize: '11.5px',
+    fontWeight: 700,
+    whiteSpace: 'nowrap',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '4px',
+    borderRadius: '10px',
+    minWidth: 0,
   };
 
   return (
@@ -120,24 +166,40 @@ export default function AdminView({
           </div>
 
           <div className="card">
-            <div className="card-header">
+            <div className="card-header" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
               <h3 className="card-title">Sales Team Leaderboard & Quota Control</h3>
-              <div className="admin-toolbar">
-                <button className="btn btn-outline btn-sm" onClick={handleExportCSV}>
-                  <Download size={14} /> Export CSV
-                </button>
+
+              {/* Single Line Action Buttons */}
+              <div className="admin-toolbar" style={singleRowToolbarStyle}>
                 <button
-  type="button"
-  className="btn btn-primary"
-  onClick={() => downloadExecutiveReportPDF(users, deals, expenses)}
->
-  Download Executive PDF
-</button>
-                <button className="btn btn-primary btn-sm" onClick={() => setShowAddStaff(true)}>
-                  <UserPlus size={14} /> Add Staff
+                  type="button"
+                  className="btn btn-outline btn-sm"
+                  style={compactBtnStyle}
+                  onClick={handleExportCSV}
+                >
+                  <Download size={13} /> Export CSV
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  style={compactBtnStyle}
+                  onClick={() => downloadExecutiveReportPDF(users, deals, expenses)}
+                >
+                  <FileText size={13} /> Executive PDF
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  style={compactBtnStyle}
+                  onClick={() => setShowAddStaff(true)}
+                >
+                  <UserPlus size={13} /> Add Staff
                 </button>
               </div>
             </div>
+
             <div className="table-wrap">
               <table>
                 <thead>
@@ -262,11 +324,19 @@ export default function AdminView({
         </div>
       )}
 
-      {/* TAB 3: EXPENSE APPROVALS */}
+      {/* TAB 3: EXPENSE APPROVALS (WITH CLAIM SLIP DOWNLOAD) */}
       {activeTab === 'approvals' && (
         <div className="card">
-          <div className="card-header">
+          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
             <h3 className="card-title">Field Travel & Hospitality Expense Approvals</h3>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              style={{ whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
+              onClick={() => handleDownloadClaimSlip()}
+            >
+              <Download size={14} /> Download All Claim Slips
+            </button>
           </div>
           <div className="table-wrap">
             <table>
@@ -278,7 +348,7 @@ export default function AdminView({
                   <th>Category</th>
                   <th>Amount</th>
                   <th>Notes</th>
-                  <th>Action</th>
+                  <th>Action & Slip</th>
                 </tr>
               </thead>
               <tbody>
@@ -295,30 +365,42 @@ export default function AdminView({
                     </td>
                     <td>{exp.notes}</td>
                     <td>
-                      {exp.status === 'Pending' ? (
-                        <div className="approval-btn-group">
-                          <button
-                            className="btn btn-success btn-sm"
-                            onClick={() => onApproveExpense(exp.id, 'Approved')}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap' }}>
+                        {exp.status === 'Pending' ? (
+                          <div className="approval-btn-group">
+                            <button
+                              className="btn btn-success btn-sm"
+                              onClick={() => onApproveExpense(exp.id, 'Approved')}
+                            >
+                              <Check size={14} /> Approve
+                            </button>
+                            <button
+                              className="btn btn-danger-soft btn-sm"
+                              onClick={() => onApproveExpense(exp.id, 'Rejected')}
+                            >
+                              <X size={14} /> Reject
+                            </button>
+                          </div>
+                        ) : (
+                          <span
+                            className={`badge ${
+                              exp.status === 'Approved' ? 'badge-success' : 'badge-danger'
+                            }`}
                           >
-                            <Check size={14} /> Approve
-                          </button>
-                          <button
-                            className="btn btn-danger-soft btn-sm"
-                            onClick={() => onApproveExpense(exp.id, 'Rejected')}
-                          >
-                            <X size={14} /> Reject
-                          </button>
-                        </div>
-                      ) : (
-                        <span
-                          className={`badge ${
-                            exp.status === 'Approved' ? 'badge-success' : 'badge-danger'
-                          }`}
+                            {exp.status}
+                          </span>
+                        )}
+
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          style={{ whiteSpace: 'nowrap' }}
+                          onClick={() => handleDownloadClaimSlip(exp)}
+                          title="Download Claim Slip"
                         >
-                          {exp.status}
-                        </span>
-                      )}
+                          <Download size={13} /> Slip
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

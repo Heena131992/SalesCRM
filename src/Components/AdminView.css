@@ -26,3 +26,104 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================
+   SIDEBAR COMPACT GAP & SMOOTH ROLLER (SCROLLBAR)
+   ========================================================= */
+.admin-sidebar,
+.staff-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  padding: 10px 8px !important;
+  gap: 6px !important;
+}
+
+/* Header ka extra gap kam karein */
+.admin-sb-header,
+.staff-sb-header {
+  padding: 6px 8px 10px !important;
+  margin-bottom: 4px !important;
+  flex-shrink: 0;
+}
+
+/* Navigation area mein smooth vertical roller (scrollbar) */
+.admin-sb-nav,
+.staff-sb-nav {
+  flex: 1 1 auto;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 4px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 2px !important;
+  scrollbar-width: thin; /* Firefox roller */
+  scrollbar-color: #334155 #0f172a;
+}
+
+/* Chrome, Edge & Safari ke liye Sleek Navy-Blue Roller */
+.admin-sb-nav::-webkit-scrollbar,
+.staff-sb-nav::-webkit-scrollbar {
+  width: 5px;
+}
+
+.admin-sb-nav::-webkit-scrollbar-track,
+.staff-sb-nav::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 999px;
+}
+
+.admin-sb-nav::-webkit-scrollbar-thumb,
+.staff-sb-nav::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 999px;
+}
+
+.admin-sb-nav::-webkit-scrollbar-thumb:hover,
+.staff-sb-nav::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+
+/* Section Labels aur Links ke beech ka gap kam karein */
+.admin-sb-section-label,
+.staff-sb-section-label {
+  margin: 8px 0 4px !important;
+  padding: 0 10px !important;
+  font-size: 0.68rem !important;
+}
+
+.admin-sb-link,
+.staff-sb-link {
+  padding: 8px 10px !important;
+  margin-bottom: 2px !important;
+  border-radius: 9px !important;
+  font-size: 0.85rem !important;
+  gap: 8px !important;
+}
+
+/* Footer (Profile + Switcher + Exit Button) ka gap compact karein */
+.admin-sb-footer,
+.staff-sb-footer {
+  padding-top: 8px !important;
+  margin-top: auto !important;
+  display: flex;
+  flex-direction: column;
+  gap: 6px !important;
+  flex-shrink: 0;
+}
+
+.admin-profile-card,
+.staff-profile-card {
+  padding: 8px 10px !important;
+  margin-bottom: 0 !important;
+}
+
+.admin-switcher-select,
+.staff-switcher-select,
+.admin-logout-btn,
+.staff-logout-btn {
+  padding: 7px 10px !important;
+  font-size: 0.8rem !important;
+}

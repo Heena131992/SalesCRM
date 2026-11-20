@@ -12,6 +12,7 @@ import AdminMasterPipeline from './Components/AdminMasterPipeline';
 import AdminReports from './Components/AdminReports';
 import StaffView from './Components/StaffView';
 
+
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
   const [darkMode, setDarkMode] = useState(false);
   const [toast, setToast] = useState('');
+ 
 
   const triggerToast = (msg) => {
     setToast(msg);
@@ -307,10 +309,11 @@ export default function App() {
         reports: 'Revenue & Commission Audit Reports',
       };
       return adminTitles[activeTab] || 'Admin Dashboard';
+      
     }
     return `Welcome, ${currentUser.name}`;
   };
-
+  
   return (
     <div className={`app-shell ${darkMode ? 'dark-theme' : ''}`}>
       {currentUser.role === 'admin' ? (
@@ -335,7 +338,6 @@ export default function App() {
           onLogout={() => setCurrentUserId(null)}
         />
       )}
-
       <div className="main-content">
         <header className="topbar">
           <div className="topbar-title">
